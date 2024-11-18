@@ -3,7 +3,7 @@
 #include "expressao.h"
 
 int main(void) {
-    char *Expressao = "3 4 + 5 *";
+    char *Expressao = "225.25 225.25 + 450.25 +";
     float resultado = getValor(Expressao);
     printf("Resultado 1: %f \n", resultado);
 
@@ -33,6 +33,10 @@ int main(void) {
 
     char *Expressao7 = "45 60 + 30 cos *";
     resultado = getValor(Expressao7);
+    printf("Resultado 2: %f \n", resultado);
+
+    char *Expressao8 = "0.5 45 sen 2 ^ +";
+    resultado = getValor(Expressao8);
     printf("Resultado 2: %f \n", resultado);
 
     return 0;
