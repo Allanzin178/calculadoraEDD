@@ -22,6 +22,7 @@ Pilha *inicializar();
 void empilhar(Pilha *P, Item *I);
 Item *desempilhar(Pilha *P);
 Item *criarItem(float C);
+Item *variosNum(Pilha *P, int x);
 
 Pilha *inicializar() {
     Pilha *P = (Pilha *)malloc(sizeof(Pilha));
@@ -47,7 +48,7 @@ void empilhar(Pilha *P, Item *I) {
 Item *desempilhar(Pilha *P) {
     if (P->Tamanho <= 0) {
         printf("ERRO: Tentando desempilhar sem itens o suficiente!\n");
-        return NULL;
+        exit(EXIT_FAILURE); // Interrompe a execução com erro
     }
 
     Item *I = P->Topo;
@@ -70,17 +71,36 @@ Item *criarItem(float C) {
     return E;
 }
 
+Item *variosNum(Pilha *P, int cont){
+    float soma = 0;
+    for(int i = 0; i < cont; i++){
+        printf("Teste %d %d\n", i, cont);
+        soma = soma + (desempilhar(P)->Chave * pow(10, i));
+    }
+    Item *I = criarItem(soma);
+    return I;
+}
+
 // Avaliar
 
 float getValor(char *Expressao) {
     Pilha *P = inicializar();
+    int cont = 0;
 
     for (int i = 0; Expressao[i] != '\0'; i++) {
         if (isdigit(Expressao[i])) {
+            cont++;
             Item *I = criarItem((float)(Expressao[i] - '0'));
             empilhar(P, I);
         } else if (Expressao[i] == ' ' || Expressao[i] == '\t') {
+
+            // NAO MUDA ISSO!!!!!
+            if(cont > 1){
+                empilhar(P, variosNum(P, cont));
+            }
+            cont = 0;
             continue;
+            
         } else {
 
             float Operando1;
@@ -89,35 +109,47 @@ float getValor(char *Expressao) {
             float Res;
             Item *I;
 
+            // NAO MUDA ISSO!!!!!
+            if(cont > 1){
+                empilhar(P, variosNum(P, cont));
+            }
             switch (Expressao[i]) {
                 case '+':
-                    Operando1 = desempilhar(P)->Chave;
-                    Operando2 = desempilhar(P)->Chave;  
+                    Operando2 = desempilhar(P)->Chave;
+                    Operando1 = desempilhar(P)->Chave;  
                     Res = Operando1 + Operando2;
-                    printf("%.1f\n", Res);
+                    printf("%.1f %.1f %.1f\n", Operando1, Operando2, Res);
                     break;
                 case '-':
-                    Operando1 = desempilhar(P)->Chave;
                     Operando2 = desempilhar(P)->Chave;
+                    Operando1 = desempilhar(P)->Chave;
                     Res = Operando1 - Operando2;
-                    printf("%.1f\n", Res);
+                    printf("%.1f %.1f %.1f\n", Operando1, Operando2, Res);
                     break;
                 case '*':
-                    Operando1 = desempilhar(P)->Chave;
                     Operando2 = desempilhar(P)->Chave;
+                    Operando1 = desempilhar(P)->Chave;
                     Res = Operando1 * Operando2;
-                    printf("%.1f\n", Res);
+                    printf("%.1f %.1f %.1f\n", Operando1, Operando2, Res);
                     break;
                 case '/':
-                    Operando1 = desempilhar(P)->Chave;
                     Operando2 = desempilhar(P)->Chave;
+                    Operando1 = desempilhar(P)->Chave;
                     if (Operando2 == 0) {
                         printf("ERRO: Divisão por zero!\n");
                         exit(EXIT_FAILURE);
                     }
                     Res = Operando1 / Operando2;
+                    printf("%.1f %.1f %.1f\n", Operando1, Operando2, Res);
+                    break;
+                case '^':
+                    Operando2 = desempilhar(P)->Chave;
+                    Operando1 = desempilhar(P)->Chave;
+                    Res = pow(Operando1, Operando2);
                     printf("%.1f\n", Res);
                     break;
+                
+                // ----------FUNÇAO DE LOG----------
                 case 'l':
                     Operando1 = desempilhar(P)->Chave;
 
@@ -127,7 +159,7 @@ float getValor(char *Expressao) {
                     }
                     
                     Res = log10(Operando1);
-                    printf("%.1f\n", Res);
+                    printf("%.1f %.1f\n", Operando1, Res);
                     break;
                 case 'o':
                     if(Expressao[i - 1] != 'l' || Expressao[i + 1] != 'g'){
@@ -141,12 +173,44 @@ float getValor(char *Expressao) {
                         exit(EXIT_FAILURE);
                     }
                     break;
+
+                // ----------FUNÇAO DE RAIZ----------
+                case 'r':
+                    Operando1 = desempilhar(P)->Chave;
+
+                    if(Expressao[i + 1] != 'a' || Expressao[i + 2] != 'i' || Expressao[i + 3] != 'z'){
+                        printf("ERRO");
+                        exit(EXIT_FAILURE);
+                    }
+
+                    Res = sqrt(Operando1);
+                    printf("%.1f\n", Res);
+                    break;
+                case 'a':
+                    if(Expressao[i - 1] != 'r' || Expressao[i + 1] != 'i' || Expressao[i + 2] != 'z'){
+                        printf("ERRO: operador invalido!\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    break;
+                case 'i':
+                    if(Expressao[i - 2] != 'r' || Expressao[i - 1] != 'a' || Expressao[i + 1] != 'z'){
+                        printf("ERRO: operador invalido!\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    break;
+                case 'z':
+                    if(Expressao[i - 3] != 'r' || Expressao[i - 2] != 'a' || Expressao[i - 1] != 'i'){
+                        printf("ERRO: operador invalido!\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    break;
                 default:
                     printf("ERRO: operador invalido!\n");
                     exit(EXIT_FAILURE);
                     break;
             }
 
+            cont = 0;
             I = criarItem(Res);
             empilhar(P, I);
         }
