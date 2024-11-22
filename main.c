@@ -3,9 +3,10 @@
 #include <string.h>
 #include "expressao.h"
 
+#define numTestes 9
+
 int main(void) {
 
-    int numTestes = 9;
     Expressao E[numTestes];
     system("cls");
     

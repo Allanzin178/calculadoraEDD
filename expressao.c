@@ -266,6 +266,12 @@ float getValor(char *Expressao)
             case '^':
                 Operando2 = desempilhar(P)->Chave;
                 Operando1 = desempilhar(P)->Chave;
+                if (Operando2 == 0 && Operando1 == 0)
+                {
+                    printf("ERRO: 0^0! Calculo impossivel!\n");
+                    liberarPilha(P);
+                    return 0;
+                }
                 Res = pow(Operando1, Operando2);
                 // printf("%.1f %.1f %.1f\n", Operando1, Operando2, Res);
                 break;
